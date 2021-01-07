@@ -9,11 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-        - os: windows-latest
-          vcvars: C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat
-          openssl_home: C:\Program Files\OpenSSL-Win64
+        os: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 11
