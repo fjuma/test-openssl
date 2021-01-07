@@ -31,9 +31,12 @@ jobs:
         name: Install full OpenSSL library
         run: |
           choco install --no-progress openssl
-      - if: matrix.os != 'windows-latest'
+      - if: matrix.os == 'mac-latest'
         name: Build with Maven
         run: mvn -B package --file pom.xml
+      - if: matrix.os == 'ubuntu-latest'
+        name: Build with Maven
+        run: mvn -B package --file pom.xml -Dorg.wildfly.openssl.path=/lib/x86_64-linux-gnu
       - if: matrix.os == 'windows-latest'
         name: Build with Microsoft Visual Studio native tools command prompt and Maven
         env:
