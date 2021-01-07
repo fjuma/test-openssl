@@ -37,7 +37,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -47,7 +46,6 @@ import org.junit.Test;
  *
  * @author <a href="mailto:fjuma@redhat.com">Farah Juma</a>
  */
-@Ignore
 public class BasicOpenSSLEngineLegacyProtocolsTest extends AbstractOpenSSLTest  {
 
     public static final String MESSAGE = "Hello World";
