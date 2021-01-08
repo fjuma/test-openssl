@@ -35,8 +35,7 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionId(SSLTestUtils.createSSLContext("openssl.TLSv1.2"), "openssl.TLSv1.2");
     }
 
-    @Ignore
-    @Test
+    @Test(timeout=4000)
     public void testSessionTimeoutOpenSsl() throws Exception {
         testSessionTimeout("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
