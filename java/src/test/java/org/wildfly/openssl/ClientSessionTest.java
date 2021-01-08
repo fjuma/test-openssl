@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class ClientSessionTest extends ClientSessionTestBase {
 
-    @Test
+    @Test(timeout=4000)
     public void testOpenSsl() throws Exception {
         testSessionId(SSLTestUtils.createSSLContext("openssl.TLSv1.2"), "openssl.TLSv1.2");
     }
@@ -48,11 +48,13 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionTimeoutTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testSessionInvalidationOpenSsl() throws Exception {
         testSessionInvalidation("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testSessionInvalidationOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
@@ -72,11 +74,13 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionSizeTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testClientSessionInvalidationMultiThreadAccessOpenSsl() throws Exception {
         testClientSessionInvalidationMultiThreadAccess("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testClientSessionInvalidationMultiThreadAccessOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
