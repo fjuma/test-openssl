@@ -109,9 +109,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server2.signal();
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         SSLSessionContext clientSession = clientContext.getClientSessionContext();
-        while (! server1.started || ! server2.started) {
-            Thread.yield();
-        }
+       // while (! server1.started || ! server2.started) {
+       //     Thread.yield();
+       // }
+        Assert.assertTrue(server1.started);
+        Assert.assertTrue(server2.started);
         SSLSession firstSession1 = connect(clientContext, port1);
         Assert.assertFalse(((OpenSSlSession) firstSession1).isReused());
         SSLSession firstSession2 = connect(clientContext, port2);
@@ -262,9 +264,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         final SSLSessionContext clientSession = clientContext.getClientSessionContext();
 
-        while (! server1.started || ! server2.started) {
-            Thread.yield();
-        }
+        //while (! server1.started || ! server2.started) {
+        //    Thread.yield();
+        //}
+        Assert.assertTrue(server1.started);
+        Assert.assertTrue(server2.started);
 
         SSLSession host1Session = connect(clientContext, port1);
         Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
