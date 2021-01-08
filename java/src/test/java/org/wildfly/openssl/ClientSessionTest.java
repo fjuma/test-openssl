@@ -22,6 +22,7 @@ package org.wildfly.openssl;
 import static org.wildfly.openssl.OpenSSLEngine.isTLS13Supported;
 
 import org.junit.Assume;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,11 +35,13 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionId(SSLTestUtils.createSSLContext("openssl.TLSv1.2"), "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testSessionTimeoutOpenSsl() throws Exception {
         testSessionTimeout("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testSessionTimeoutOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
@@ -56,11 +59,13 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionInvalidationTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testSessionSizeOpenSsl() throws Exception {
         testSessionSize("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testSessionSizeOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
