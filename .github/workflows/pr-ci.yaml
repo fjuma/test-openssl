@@ -40,7 +40,7 @@ jobs:
         run: mvn -B package --file pom.xml
       - if: matrix.os == 'ubuntu-latest'
         name: Build with Maven
-        run: mvn -B package --file pom.xml -Dorg.wildfly.openssl.path=/usr/lib/x86_64-linux-gnu
+        run: mvn -B package --file pom.xml -Dorg.wildfly.openssl.path=/usr/lib/x86_64-linux-gnu -Dtest=ClientSessionTest
       - if: matrix.os == 'windows-latest'
         name: Build with Microsoft Visual Studio native tools command prompt and Maven
         env:
