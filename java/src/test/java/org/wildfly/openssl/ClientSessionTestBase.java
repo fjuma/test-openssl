@@ -103,8 +103,17 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
     void testSessionTimeoutTLS13(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
         final int port2 = SSLTestUtils.SECONDARY_PORT;
-        Server server1 = startServerTLS13(serverProvider, port1);
-        Server server2 = startServerTLS13(serverProvider, port2);
+        //Server server1 = startServerTLS13(serverProvider, port1);
+        //Server server2 = startServerTLS13(serverProvider, port2);
+
+        Server server1 = new Server(serverProvider, port1);
+        final Thread thread1 = new Thread(server1);
+        thread1.start();
+
+        Server server2 = new Server(serverProvider, port2);
+        final Thread thread2 = new Thread(server2);
+        thread2.start();
+
         server1.signal();
         server2.signal();
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
@@ -140,9 +149,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server1.signal();
         server2.go = false;
         server2.signal();
-        while (server1.started || server2.started) {
-            Thread.yield();
-        }
+        //while (server1.started || server2.started) {
+        //    Thread.yield();
+        //}
+        thread1.join();
+        thread2.join();
     }
 
     void testSessionInvalidation(String serverProvider, String clientProvider) throws Exception {
@@ -254,8 +265,16 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         final int port1 = PORT;
         final int port2 = SSLTestUtils.SECONDARY_PORT;
 
-        Server server1 = startServerTLS13(serverProvider, port1);
-        Server server2 = startServerTLS13(serverProvider, port2);
+       // Server server1 = startServerTLS13(serverProvider, port1);
+        //Server server2 = startServerTLS13(serverProvider, port2);
+        Server server1 = new Server(serverProvider, port1);
+        final Thread thread1 = new Thread(server1);
+        thread1.start();
+
+        Server server2 = new Server(serverProvider, port2);
+        final Thread thread2 = new Thread(server2);
+        thread2.start();
+
         server1.signal();
         server2.signal();
 
@@ -322,9 +341,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server2.go = false;
         server2.signal();
 
-        while (server1.started || server2.started) {
-            Thread.yield();
-        }
+        //while (server1.started || server2.started) {
+        //    Thread.yield();
+        //}
+        thread1.join();
+        thread2.join();
     }
 
     void testClientSessionInvalidationMultiThreadAccess(String serverProvider, String clientProvider) throws Exception {
