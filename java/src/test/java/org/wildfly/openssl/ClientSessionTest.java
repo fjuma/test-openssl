@@ -30,11 +30,13 @@ import org.junit.Test;
  */
 public class ClientSessionTest extends ClientSessionTestBase {
 
+    @Ignore
     @Test
     public void testOpenSsl() throws Exception {
         testSessionId(SSLTestUtils.createSSLContext("openssl.TLSv1.2"), "openssl.TLSv1.2");
     }
 
+    @Ignore
     @Test
     public void testSessionTimeoutOpenSsl() throws Exception {
         testSessionTimeout("openssl.TLSv1.2", "openssl.TLSv1.2");
@@ -47,17 +49,19 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionTimeoutTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testSessionInvalidationOpenSsl() throws Exception {
         testSessionInvalidation("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testSessionInvalidationOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
         testSessionInvalidationTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testSessionSizeOpenSsl() throws Exception {
         testSessionSize("openssl.TLSv1.2", "openssl.TLSv1.2");
@@ -70,6 +74,7 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionSizeTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
+    @Ignore
     @Test
     public void testClientSessionInvalidationMultiThreadAccessOpenSsl() throws Exception {
         testClientSessionInvalidationMultiThreadAccess("openssl.TLSv1.2", "openssl.TLSv1.2");
