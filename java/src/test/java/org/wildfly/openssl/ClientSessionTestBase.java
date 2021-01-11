@@ -321,9 +321,17 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
 
         Server server1 = null;
         Server server2 = null;
+        Thread thread1 = null;
+        Thread thread2 = null;
         try {
-            server1 = startServerTLS13(serverProvider, port1);
-            server2 = startServerTLS13(serverProvider, port2);
+            //server1 = startServerTLS13(serverProvider, port1);
+            server1 = new Server(serverProvider, port1);
+            thread1 = new Thread(server1);
+            thread1.start();
+            //server2 = startServerTLS13(serverProvider, port2);
+            server2 = new Server(serverProvider, port2);
+            thread2 = new Thread(server2);
+            thread2.start();
             server1.signal();
             server2.signal();
 
@@ -393,9 +401,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.go = false;
             server2.signal();
 
-            while ((server1 != null && server1.started) || (server2 != null && server2.started)) {
-                Thread.yield();
-            }
+            //while ((server1 != null && server1.started) || (server2 != null && server2.started)) {
+            //    Thread.yield();
+            //}
+            thread1.join();
+            thread2.join();
         }
     }
 
