@@ -231,8 +231,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
     void testSessionInvalidationTLS13(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
         Server server = null;
+        Thread thread = null;
         try {
-            server = startServerTLS13(serverProvider, port1);
+            //server = startServerTLS13(serverProvider, port1);
+            server = new Server(serverProvider, port1);
+            thread = new Thread(server);
+            thread.start();
             server.signal();
             SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
             SSLSessionContext clientSession = clientContext.getClientSessionContext();
@@ -254,9 +258,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             if (server != null) {
                 server.go = false;
                 server.signal();
-                while (server.started) {
-                    Thread.yield();
-                }
+                //while (server.started) {
+                //    Thread.yield();
+                //}
+                thread.join();
             }
         }
     }
