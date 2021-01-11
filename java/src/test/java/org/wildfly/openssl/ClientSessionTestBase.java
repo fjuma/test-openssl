@@ -109,9 +109,9 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server2.signal();
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         SSLSessionContext clientSession = clientContext.getClientSessionContext();
-       // while (! server1.started || ! server2.started) {
-       //     Thread.yield();
-       // }
+        while (! server1.started || ! server2.started) {
+           Thread.yield();
+        }
         Assert.assertTrue(server1.started);
         Assert.assertTrue(server2.started);
         SSLSession firstSession1 = connect(clientContext, port1);
@@ -264,9 +264,9 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         final SSLSessionContext clientSession = clientContext.getClientSessionContext();
 
-        //while (! server1.started || ! server2.started) {
-        //    Thread.yield();
-        //}
+        while (! server1.started || ! server2.started) {
+            Thread.yield();
+        }
         Assert.assertTrue(server1.started);
         Assert.assertTrue(server2.started);
 
