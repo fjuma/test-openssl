@@ -49,13 +49,11 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionTimeoutTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
-    @Ignore
-    @Test
+    @Test(timeout=90000)
     public void testSessionInvalidationOpenSsl() throws Exception {
         testSessionInvalidation("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
-    @Ignore
     @Test(timeout = 90000)
     public void testSessionInvalidationOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
