@@ -79,7 +79,7 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testClientSessionInvalidationMultiThreadAccess("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
-    @Test
+    @Test(timeout=90000)
     public void testClientSessionInvalidationMultiThreadAccessOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
         testClientSessionInvalidationMultiThreadAccess("openssl.TLSv1.3", "openssl.TLSv1.3");
