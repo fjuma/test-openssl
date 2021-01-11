@@ -60,7 +60,6 @@ public class ClientSessionInvalidationTest extends ClientSessionTestBase {
         testSessionSize("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
-    @Ignore
     @Test(timeout=90000)
     public void testSessionSizeOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
