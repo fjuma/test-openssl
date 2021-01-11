@@ -577,10 +577,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                 try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
 
                     waitForSignal();
-                    started = true;
+                    //started = true;
                     while (go) {
                         try {
                             System.out.println("Waiting for connection");
+                            started = true;
                             Socket sock = sslServerSocket.accept();
                             BufferedReader reader = new BufferedReader(
                                     new InputStreamReader(sock.getInputStream()));
