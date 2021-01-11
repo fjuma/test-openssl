@@ -20,7 +20,6 @@
 package org.wildfly.openssl;
 
 import static org.wildfly.openssl.OpenSSLEngine.isTLS13Supported;
-import static org.wildfly.openssl.SSLTestUtils.HOST;
 import static org.wildfly.openssl.SSLTestUtils.PORT;
 
 import org.junit.Assert;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -110,7 +108,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         SSLSessionContext clientSession = clientContext.getClientSessionContext();
         while (! server1.started || ! server2.started) {
-            Thread.yield();
+            Thread.sleep(1);
         }
         SSLSession firstSession1 = connect(clientContext, port1);
         Assert.assertFalse(((OpenSSlSession) firstSession1).isReused());
@@ -357,7 +355,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
 
             EchoRunnable echo = new EchoRunnable(serverSocket, sslContext, new AtomicReference<>(), (engine -> {
                 try {
-                    engine.setEnabledProtocols(new String[]{ "TLSv1.2"});
+                    engine.setEnabledProtocols(new String[]{ "TLSv1", "TLSv1.1", "TLSv1.2"});
                     return engine;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -440,9 +438,9 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         EchoRunnable echo = new EchoRunnable(serverSocket, SSLTestUtils.createSSLContext(serverProvider), new AtomicReference<>(), (engine -> {
             try {
                 if (isTLS13Supported()) {
-                    engine.setEnabledProtocols(new String[]{"TLSv1.2", "TLSv1.3"});
+                    engine.setEnabledProtocols(new String[]{"TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"});
                 } else {
-                    engine.setEnabledProtocols(new String[]{"TLSv1.2"});
+                    engine.setEnabledProtocols(new String[]{"TLSv1", "TLSv1.1", "TLSv1.2"});
                 }
                 return engine;
             } catch (Exception e) {
@@ -574,8 +572,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         public void run() {
             try {
                 SSLContext serverContext = SSLTestUtils.createSSLContext(provider);
-                try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
-
+                try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port)) {
+                //try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
+                //try (ServerSocket sslServerSocket = SSLTestUtils.createServerSocket(port)) {
+                    sslServerSocket.setReuseAddress(true);
                     waitForSignal();
                     started = true;
                     while (go) {
@@ -628,3 +628,4 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
     }
 
 }
+
