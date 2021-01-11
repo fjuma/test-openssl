@@ -654,6 +654,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                             out.flush();
                             waitForSignal();
                         } catch (Exception ex) {
+                            started = false;
                             ex.printStackTrace();
                         }
                     }
