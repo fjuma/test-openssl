@@ -145,16 +145,13 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             if (server1 != null) {
                 server1.go = false;
                 server1.signal();
-                while (server1.started) {
-                    Thread.yield();
-                }
             }
             if (server2 != null) {
                 server2.go = false;
                 server2.signal();
-                while (server2.started) {
-                    Thread.yield();
-                }
+            }
+            while ((server1 != null && server1.started) || (server2 != null && server2.started)) {
+                Thread.yield();
             }
         }
     }
