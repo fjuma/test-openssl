@@ -252,7 +252,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             SSLSession secondSession = connect(clientContext, port1);
             Assert.assertTrue(secondSession.isValid());
             Assert.assertFalse(((OpenSSlSession) secondSession).isReused());
-            firstSession.invalidate();
+            //firstSession.invalidate();
             secondSession.invalidate();
         } finally {
             if (server != null) {
