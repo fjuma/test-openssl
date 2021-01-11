@@ -48,14 +48,4 @@ public class ClientSessionTest extends ClientSessionTestBase {
         testSessionTimeoutTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
     }
 
-    @Test(timeout=90000)
-    public void testSessionSizeOpenSsl() throws Exception {
-        testSessionSize("openssl.TLSv1.2", "openssl.TLSv1.2");
-    }
-
-    @Test(timeout=90000)
-    public void testSessionSizeOpenSslTLS13() throws Exception {
-        Assume.assumeTrue(isTLS13Supported());
-        testSessionSizeTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");
-    }
 }
