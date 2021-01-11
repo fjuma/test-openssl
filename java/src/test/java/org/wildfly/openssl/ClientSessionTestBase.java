@@ -110,7 +110,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         SSLSessionContext clientSession = clientContext.getClientSessionContext();
         while (! server1.started || ! server2.started) {
-            Thread.yield();
+            Thread.sleep(1);
         }
         SSLSession firstSession1 = connect(clientContext, port1);
         Assert.assertFalse(((OpenSSlSession) firstSession1).isReused());
