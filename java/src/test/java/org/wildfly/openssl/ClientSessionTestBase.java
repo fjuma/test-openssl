@@ -139,7 +139,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server2.go = false;
         server2.signal();
         while (server1.started || server2.started) {
-            Thread.yield();
+            Thread.sleep(1);
         }
     }
 
@@ -179,7 +179,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
         SSLSessionContext clientSession = clientContext.getClientSessionContext();
         while (! server.started) {
-            Thread.yield();
+            Thread.sleep(1);
         }
         SSLSession firstSession = connect(clientContext, port1);
         server.signal();
@@ -195,7 +195,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         server.go = false;
         server.signal();
         while (server.started) {
-            Thread.yield();
+            Thread.sleep(1);
         }
     }
 
