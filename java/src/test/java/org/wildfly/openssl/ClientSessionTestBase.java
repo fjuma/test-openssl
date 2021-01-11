@@ -574,12 +574,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         public void run() {
             try {
                 SSLContext serverContext = SSLTestUtils.createSSLContext(provider);
-                try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
-
+                //try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
+                try (ServerSocket sslServerSocket = SSLTestUtils.createServerSocket(port)) {
                     waitForSignal();
+                    started = true;
                     while (go) {
                         try {
-                            started = true;
                             System.out.println("Waiting for connection");
                             Socket sock = sslServerSocket.accept();
                             BufferedReader reader = new BufferedReader(
@@ -592,7 +592,6 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                             out.flush();
                             waitForSignal();
                         } catch (Exception ex) {
-                            started = false;
                             ex.printStackTrace();
                         }
                     }
