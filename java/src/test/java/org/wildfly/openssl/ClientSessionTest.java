@@ -31,19 +31,19 @@ import org.junit.Test;
 public class ClientSessionTest extends ClientSessionTestBase {
 
 
-    @Test(timeout=90000)
+    @Test(timeout=20000)
     public void testOpenSsl() throws Exception {
         testSessionId(SSLTestUtils.createSSLContext("openssl.TLSv1.2"), "openssl.TLSv1.2");
     }
 
 
-    @Test(timeout=90000)
+    @Test(timeout=20000)
     public void testSessionTimeoutOpenSsl() throws Exception {
         testSessionTimeout("openssl.TLSv1.2", "openssl.TLSv1.2");
     }
 
 
-    @Test(timeout=90000)
+    @Test(timeout=20000)
     public void testSessionTimeoutOpenSslTLS13() throws Exception {
         Assume.assumeTrue(isTLS13Supported());
         testSessionTimeoutTLS13("openssl.TLSv1.3", "openssl.TLSv1.3");

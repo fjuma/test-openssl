@@ -20,7 +20,6 @@
 package org.wildfly.openssl;
 
 import static org.wildfly.openssl.OpenSSLEngine.isTLS13Supported;
-import static org.wildfly.openssl.SSLTestUtils.HOST;
 import static org.wildfly.openssl.SSLTestUtils.PORT;
 
 import org.junit.Assert;
@@ -38,7 +37,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -574,8 +572,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         public void run() {
             try {
                 SSLContext serverContext = SSLTestUtils.createSSLContext(provider);
+                try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port)) {
                 //try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
-                try (ServerSocket sslServerSocket = SSLTestUtils.createServerSocket(port)) {
+                //try (ServerSocket sslServerSocket = SSLTestUtils.createServerSocket(port)) {
+                    sslServerSocket.setReuseAddress(true);
                     waitForSignal();
                     started = true;
                     while (go) {
