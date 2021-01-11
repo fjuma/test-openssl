@@ -344,6 +344,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             Assert.assertTrue(server1.started);
             Assert.assertTrue(server2.started);
 
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             SSLSession host1Session = connect(clientContext, port1);
             Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
             SSLSession host2Session = connect(clientContext, port2);
@@ -352,6 +358,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.signal();
 
             // No cache limit was set, id's should be identical
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             host1Session = connect(clientContext, port1);
             Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
             host2Session = connect(clientContext, port2);
@@ -360,6 +372,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.signal();
 
             // Set the cache size to 1
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             clientSession.setSessionCacheSize(1);
             // The second session should be the one kept as it was the last one used
             host2Session = connect(clientContext, port2);
@@ -371,6 +389,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.signal();
 
             // Once more connect to the first host and this should match the previous session
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             nextSession = connect(clientContext, port1);
             Assert.assertTrue(((OpenSSlSession) nextSession).isReused());
             // Connect to the second host which should be purged at this point
@@ -380,6 +404,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.signal();
 
             // Reset the cache limit and ensure both sessions are cached
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             clientSession.setSessionCacheSize(0);
             host1Session = connect(clientContext, port1);
             Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
@@ -389,6 +419,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server2.signal();
 
             // No cache limit was set, id's should be identical
+            if (! server1.ready) {
+                Thread.sleep(1);
+            }
+            if (! server2.ready) {
+                Thread.sleep(1);
+            }
             host1Session = connect(clientContext, port1);
             Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
             host2Session = connect(clientContext, port2);
@@ -631,6 +667,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         public volatile boolean started = false;
         private String provider;
         private int port;
+        private volatile boolean ready = false;
 
         Server(String provider, int port) {
             this.provider = provider;
@@ -663,6 +700,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                     while (go) {
                         try {
                             System.out.println("Waiting for connection");
+                            ready = true;
                             Socket sock = sslServerSocket.accept();
                             BufferedReader reader = new BufferedReader(
                                     new InputStreamReader(sock.getInputStream()));
@@ -674,12 +712,12 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                             out.flush();
                             waitForSignal();
                         } catch (Exception ex) {
-                            started = false;
                             ex.printStackTrace();
                         }
                     }
                 }
                 started = false;
+                ready = false;
             } catch (Exception ex) {
                 started = false;
                 throw new RuntimeException(ex);
