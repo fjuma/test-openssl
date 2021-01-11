@@ -314,78 +314,83 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         final int port1 = PORT;
         final int port2 = SSLTestUtils.SECONDARY_PORT;
 
-        Server server1 = startServerTLS13(serverProvider, port1);
-        Server server2 = startServerTLS13(serverProvider, port2);
-        server1.signal();
-        server2.signal();
+        Server server1 = null;
+        Server server2 = null;
+        try {
+            server1 = startServerTLS13(serverProvider, port1);
+            server2 = startServerTLS13(serverProvider, port2);
+            server1.signal();
+            server2.signal();
 
-        SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
-        final SSLSessionContext clientSession = clientContext.getClientSessionContext();
+            SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
+            final SSLSessionContext clientSession = clientContext.getClientSessionContext();
 
-        while (! server1.started || ! server2.started) {
-            Thread.yield();
-        }
-        Assert.assertTrue(server1.started);
-        Assert.assertTrue(server2.started);
+            while (!server1.started || !server2.started) {
+                Thread.yield();
+            }
+            Assert.assertTrue(server1.started);
+            Assert.assertTrue(server2.started);
 
-        SSLSession host1Session = connect(clientContext, port1);
-        Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
-        SSLSession host2Session = connect(clientContext, port2);
-        Assert.assertFalse(((OpenSSlSession) host2Session).isReused());
-        server1.signal();
-        server2.signal();
+            SSLSession host1Session = connect(clientContext, port1);
+            Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
+            SSLSession host2Session = connect(clientContext, port2);
+            Assert.assertFalse(((OpenSSlSession) host2Session).isReused());
+            server1.signal();
+            server2.signal();
 
-        // No cache limit was set, id's should be identical
-        host1Session = connect(clientContext, port1);
-        Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
-        host2Session = connect(clientContext, port2);
-        Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
-        server1.signal();
-        server2.signal();
+            // No cache limit was set, id's should be identical
+            host1Session = connect(clientContext, port1);
+            Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
+            host2Session = connect(clientContext, port2);
+            Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
+            server1.signal();
+            server2.signal();
 
-        // Set the cache size to 1
-        clientSession.setSessionCacheSize(1);
-        // The second session should be the one kept as it was the last one used
-        host2Session = connect(clientContext, port2);
-        Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
-        // Connect again to the first host, this should not match the initial session for the first host
-        SSLSession nextSession = connect(clientContext, port1);
-        Assert.assertFalse(((OpenSSlSession) nextSession).isReused());
-        server1.signal();
-        server2.signal();
+            // Set the cache size to 1
+            clientSession.setSessionCacheSize(1);
+            // The second session should be the one kept as it was the last one used
+            host2Session = connect(clientContext, port2);
+            Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
+            // Connect again to the first host, this should not match the initial session for the first host
+            SSLSession nextSession = connect(clientContext, port1);
+            Assert.assertFalse(((OpenSSlSession) nextSession).isReused());
+            server1.signal();
+            server2.signal();
 
-        // Once more connect to the first host and this should match the previous session
-        nextSession = connect(clientContext, port1);
-        Assert.assertTrue(((OpenSSlSession) nextSession).isReused());
-        // Connect to the second host which should be purged at this point
-        nextSession = connect(clientContext, port2);
-        Assert.assertFalse(((OpenSSlSession) nextSession).isReused());
-        server1.signal();
-        server2.signal();
+            // Once more connect to the first host and this should match the previous session
+            nextSession = connect(clientContext, port1);
+            Assert.assertTrue(((OpenSSlSession) nextSession).isReused());
+            // Connect to the second host which should be purged at this point
+            nextSession = connect(clientContext, port2);
+            Assert.assertFalse(((OpenSSlSession) nextSession).isReused());
+            server1.signal();
+            server2.signal();
 
-        // Reset the cache limit and ensure both sessions are cached
-        clientSession.setSessionCacheSize(0);
-        host1Session = connect(clientContext, port1);
-        Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
-        host2Session = connect(clientContext, port2);
-        Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
-        server1.signal();
-        server2.signal();
+            // Reset the cache limit and ensure both sessions are cached
+            clientSession.setSessionCacheSize(0);
+            host1Session = connect(clientContext, port1);
+            Assert.assertFalse(((OpenSSlSession) host1Session).isReused());
+            host2Session = connect(clientContext, port2);
+            Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
+            server1.signal();
+            server2.signal();
 
-        // No cache limit was set, id's should be identical
-        host1Session = connect(clientContext, port1);
-        Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
-        host2Session = connect(clientContext, port2);
-        Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
-        host1Session.invalidate();
-        host2Session.invalidate();
-        server1.go = false;
-        server1.signal();
-        server2.go = false;
-        server2.signal();
+            // No cache limit was set, id's should be identical
+            host1Session = connect(clientContext, port1);
+            Assert.assertTrue(((OpenSSlSession) host1Session).isReused());
+            host2Session = connect(clientContext, port2);
+            Assert.assertTrue(((OpenSSlSession) host2Session).isReused());
+            host1Session.invalidate();
+            host2Session.invalidate();
+        } finally {
+            server1.go = false;
+            server1.signal();
+            server2.go = false;
+            server2.signal();
 
-        while (server1.started || server2.started) {
-            Thread.yield();
+            while ((server1 != null && server1.started) || (server2 != null && server2.started)) {
+                Thread.yield();
+            }
         }
     }
 
