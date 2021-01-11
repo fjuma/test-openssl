@@ -27,7 +27,6 @@ import org.junit.Assert;
 import javax.net.ssl.HandshakeCompletedEvent;
 import javax.net.ssl.HandshakeCompletedListener;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSessionContext;
 import javax.net.ssl.SSLSocket;
@@ -572,7 +571,8 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         public void run() {
             try {
                 SSLContext serverContext = SSLTestUtils.createSSLContext(provider);
-                try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port)) {
+                try (ServerSocket sslServerSocket = (ServerSocket) serverContext.getServerSocketFactory().createServerSocket(port)) {
+                //try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port)) {
                 //try (SSLServerSocket sslServerSocket = (SSLServerSocket) serverContext.getServerSocketFactory().createServerSocket(port, 10, InetAddress.getByName(HOST))) {
                 //try (ServerSocket sslServerSocket = SSLTestUtils.createServerSocket(port)) {
                     sslServerSocket.setReuseAddress(true);
