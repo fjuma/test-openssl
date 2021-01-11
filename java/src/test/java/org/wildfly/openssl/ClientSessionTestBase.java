@@ -100,7 +100,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         }
     }
 
-    void testSessionTimeoutTLS13(String serverProvider, String clientProvider) throws Exception {
+    /*void testSessionTimeoutTLS13(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
         final int port2 = SSLTestUtils.SECONDARY_PORT;
         Server server1 = null;
@@ -153,6 +153,50 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             while ((server1 != null && server1.started) || (server2 != null && server2.started)) {
                 Thread.yield();
             }
+        }
+    }*/
+    void testSessionTimeoutTLS13(String serverProvider, String clientProvider) throws Exception {
+        final int port1 = PORT;
+        final int port2 = SSLTestUtils.SECONDARY_PORT;
+        Server server1 = startServerTLS13(serverProvider, port1);
+        Server server2 = startServerTLS13(serverProvider, port2);
+        server1.signal();
+        server2.signal();
+        SSLContext clientContext = SSLTestUtils.createClientSSLContext(clientProvider);
+        SSLSessionContext clientSession = clientContext.getClientSessionContext();
+        while (! server1.started || ! server2.started) {
+            Thread.yield();
+        }
+        SSLSession firstSession1 = connect(clientContext, port1);
+        Assert.assertFalse(((OpenSSlSession) firstSession1).isReused());
+        SSLSession firstSession2 = connect(clientContext, port2);
+        Assert.assertFalse(((OpenSSlSession) firstSession2).isReused());
+        server1.signal();
+        server2.signal();
+
+        // No timeout was set, sessions should be reused
+        SSLSession secondSession1 = connect(clientContext, port1);
+        Assert.assertTrue(((OpenSSlSession) secondSession1).isReused());
+        SSLSession secondSession2 = connect(clientContext, port2);
+        Assert.assertTrue(((OpenSSlSession) secondSession2).isReused());
+        server1.signal();
+        server2.signal();
+
+        // Set the session timeout to 1 second and sleep for 2 to ensure the timeout works
+        clientSession.setSessionTimeout(1);
+        TimeUnit.SECONDS.sleep(2L);
+        SSLSession thirdSession1 = connect(clientContext, port1);
+        Assert.assertFalse(((OpenSSlSession) thirdSession1).isReused());
+        SSLSession thirdSession2 = connect(clientContext, port2);
+        Assert.assertFalse(((OpenSSlSession) thirdSession2).isReused());
+        thirdSession1.invalidate();
+        thirdSession2.invalidate();
+        server1.go = false;
+        server1.signal();
+        server2.go = false;
+        server2.signal();
+        while (server1.started || server2.started) {
+            Thread.yield();
         }
     }
 
