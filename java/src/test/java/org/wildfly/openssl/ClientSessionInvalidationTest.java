@@ -22,7 +22,6 @@ package org.wildfly.openssl;
 import static org.wildfly.openssl.OpenSSLEngine.isTLS13Supported;
 
 import org.junit.Assume;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
