@@ -563,11 +563,6 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             socket.addHandshakeCompletedListener(new FutureHandshakeCompletedListener(future));
             socket.getOutputStream().write(HELLO_WORLD);
             socket.getOutputStream().flush();
-            //
-            byte[] received = new byte[HELLO_WORLD.length];
-            socket.getInputStream().read(received);
-            System.out.println("Client received: " + new String(received));
-            Assert.assertArrayEquals(HELLO_WORLD, received);
         }
         return future.get();
     }
