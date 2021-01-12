@@ -802,6 +802,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                             byte[] received = new byte[2];
                             sock.getInputStream().read(received);
                             Assert.assertArrayEquals(new byte[]{0x12, 0x34}, received);
+                            System.out.println("read message from client");
                             sock.getOutputStream().write(new byte[]{0x56, 0x78});
                             //System.out.println("server read: " + line);
                             //PrintWriter out = new PrintWriter(
@@ -858,8 +859,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             //String inMsg = reader.readLine();
             //System.out.println("Client received: " + inMsg);
             byte[] received = new byte[2];
+            System.out.println("writing message to server");
             socket.getOutputStream().write(new byte[]{0x12, 0x34});
             socket.getInputStream().read(received);
+            System.out.println("read message from server");
             Assert.assertArrayEquals(new byte[]{0x56, 0x78}, received);
             SSLSession result = socket.getSession();
             socket.close();
