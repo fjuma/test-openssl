@@ -863,7 +863,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             //        new InputStreamReader(socket.getInputStream()));
             //String inMsg = reader.readLine();
             //System.out.println("Client received: " + inMsg);
-            byte[] received = new byte[2];
+            byte[] received = new byte[HELLO_WORLD.length];
             System.out.println("writing message to server");
             socket.getOutputStream().write(HELLO_WORLD);
             socket.getInputStream().read(received);
