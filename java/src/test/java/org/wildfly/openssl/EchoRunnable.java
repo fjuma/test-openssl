@@ -165,6 +165,7 @@ class EchoRunnable implements Runnable {
                                     }
                                 }
                                 String read = new String(dataBytes, 0, i);
+                                System.out.println("Server received: " + read);
                                 dataStream.reset();
                                 in.put((read).getBytes(StandardCharsets.US_ASCII));
                                 in.flip();

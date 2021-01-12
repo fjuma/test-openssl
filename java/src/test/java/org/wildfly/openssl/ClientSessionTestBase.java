@@ -170,14 +170,14 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
         }
     }
 
-    void testSessionInvalidationTLS13(String serverProvider, String clientProvider) throws Exception {
+    /*void testSessionInvalidationTLS13(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
 
-        ServerReadTwo server = null;
+        Server server = null;
         Thread thread = null;
         try {
             //Server server = startServerTLS13(serverProvider, port1);
-            server = new ServerReadTwo(serverProvider, port1);
+            server = new Server(serverProvider, port1);
             thread = new Thread(server);
             thread.start();
             server.signal();
@@ -202,9 +202,9 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             server.signal();
             thread.join();
         }
-    }
+    }*/
     // working with echorunnable
-   /* void testSessionInvalidationTLS13(String serverProvider, String clientProvider) throws Exception {
+    void testSessionInvalidationTLS13(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
 
         Server server = null;
@@ -221,13 +221,13 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             //while (!server.started) {
             //    Thread.yield();
             //}
-            SSLSession firstSession = connectUpdated(clientContext, port1);
+            SSLSession firstSession = connectReadTwo(clientContext, port1);
             //server.signal();
             Assert.assertTrue(firstSession.isValid());
             Assert.assertFalse(((OpenSSlSession) firstSession).isReused());
             firstSession.invalidate();
             Assert.assertFalse(firstSession.isValid());
-            SSLSession secondSession = connectUpdated(clientContext, port1);
+            SSLSession secondSession = connectReadTwo(clientContext, port1);
             Assert.assertTrue(secondSession.isValid());
             Assert.assertFalse(((OpenSSlSession) secondSession).isReused());
             secondSession.invalidate();
@@ -236,7 +236,7 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             //server.signal();
             thread.join();
         }
-    }*/
+    }
 
     void testSessionSize(String serverProvider, String clientProvider) throws Exception {
         final int port1 = PORT;
@@ -558,6 +558,11 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             socket.addHandshakeCompletedListener(new FutureHandshakeCompletedListener(future));
             socket.getOutputStream().write(HELLO_WORLD);
             socket.getOutputStream().flush();
+            //
+            byte[] received = new byte[HELLO_WORLD.length];
+            socket.getInputStream().read(received);
+            System.out.println("Client received: " + new String(received));
+            Assert.assertArrayEquals(HELLO_WORLD, received);
         }
         return future.get();
     }
@@ -860,10 +865,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
             //System.out.println("Client received: " + inMsg);
             byte[] received = new byte[2];
             System.out.println("writing message to server");
-            socket.getOutputStream().write(new byte[]{0x12, 0x34});
+            socket.getOutputStream().write(HELLO_WORLD);
             socket.getInputStream().read(received);
             System.out.println("read message from server");
-            Assert.assertArrayEquals(new byte[]{0x56, 0x78}, received);
+            Assert.assertArrayEquals(HELLO_WORLD, received);
             SSLSession result = socket.getSession();
             socket.close();
             return result;
