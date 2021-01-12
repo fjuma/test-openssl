@@ -635,10 +635,10 @@ public class ClientSessionTestBase extends AbstractOpenSSLTest {
                     new OutputStreamWriter(socket.getOutputStream()));
             out.println("message");
             out.flush();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
-            String inMsg = reader.readLine();
-            System.out.println("Client received: " + inMsg);
+            //BufferedReader reader = new BufferedReader(
+            //        new InputStreamReader(socket.getInputStream()));
+            //String inMsg = reader.readLine();
+            //System.out.println("Client received: " + inMsg);
             SSLSession result = socket.getSession();
             socket.close();
             return result;
